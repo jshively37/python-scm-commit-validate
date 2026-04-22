@@ -60,12 +60,15 @@ def get_specific_job(job_id):
 
 if __name__ == "__main__":
     create_token()
+
+    # Make the initial commit and get the parent job ID.
     commit_response = make_commit()
     parent_job = commit_response["job_id"]
     status_payload = get_specific_job(job_id=commit_response["job_id"])
     status = status_payload["data"][0]["result_str"]
     print(f"Parent job status: {status}")
     print("-" * 50)
+    # Monitor the parent job until it is no longer pending.
     while status == "PEND":
         status_payload = get_specific_job(job_id=commit_response["job_id"])
         status = status_payload["data"][0]["result_str"]
@@ -73,15 +76,17 @@ if __name__ == "__main__":
         print("-" * 50)
         sleep(15)
 
-    parent_jobs = []
+    # Get all child jobs that are associated with the parent job and create a list of their IDs.
+    child_jobs = []
     if status == "OK":
         all_jobs = get_commit_jobs()
         for x in all_jobs["data"]:
             if x["parent_id"] == parent_job:
-                parent_jobs.append(x["id"])
+                child_jobs.append(x["id"])
 
-    while parent_jobs != []:
-        for job in sorted(parent_jobs):
+    # Loop through the child jobs and monitor their status until they are all complete.
+    while child_jobs != []:
+        for job in sorted(child_jobs):
             status_payload = get_specific_job(job_id=job)
             status = status_payload["data"][0]["result_str"]
             print(f"Job {job} has status: {status}")
@@ -90,4 +95,4 @@ if __name__ == "__main__":
                 sleep(15)
                 break
             else:
-                parent_jobs.remove(job)
+                child_jobs.remove(job)
