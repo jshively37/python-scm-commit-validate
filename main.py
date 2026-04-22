@@ -12,8 +12,6 @@ HEADERS = {
     "Accept": "application/json",
 }
 
-FOLDER = "Remote Networks"
-
 AUTH_HEADERS = {
     "Content-Type": "application/x-www-form-urlencoded",
     "Accept": "application/json",
