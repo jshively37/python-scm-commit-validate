@@ -68,6 +68,7 @@ if __name__ == "__main__":
     status = status_payload["data"][0]["result_str"]
     print(f"Parent job status: {status}")
     print("-" * 50)
+
     # Monitor the parent job until it is no longer pending.
     while status == "PEND":
         status_payload = get_specific_job(job_id=commit_response["job_id"])
