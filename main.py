@@ -66,7 +66,6 @@ def get_specific_job(job_id):
             print(f"HTTP error occurred: {err}")
 
 
-
 if __name__ == "__main__":
     create_token()
 
