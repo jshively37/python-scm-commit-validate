@@ -82,6 +82,9 @@ if __name__ == "__main__":
         sleep(SLEEP_TIME)
         status_payload = get_specific_job(job_id=commit_response["job_id"])
         status = status_payload["data"][0]["result_str"]
+        if status == 'FAIL':
+            print(f"Parent job {parent_job} failed. Exiting.")
+            exit(1)
         print(f"Parent job {parent_job} status: {status}")
         print("-" * 50)
 
@@ -100,8 +103,11 @@ if __name__ == "__main__":
             status = status_payload["data"][0]["result_str"]
             print(f"Child job {job} status: {status}")
             print("-" * 50)
-            if status != "OK":
+            if status == "OK":
+                child_jobs.remove(job)
+            elif status == 'FAIL':
+                print(f"Child job {job} failed. Removing from list and continuing.")
+                child_jobs.remove(job)
+            else:
                 sleep(SLEEP_TIME)
                 break
-            else:
-                child_jobs.remove(job)
