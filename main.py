@@ -62,7 +62,7 @@ if __name__ == "__main__":
     # Make the initial commit and get the parent job ID.
     commit_response = make_commit()
     parent_job = commit_response["job_id"]
-    status_payload = get_specific_job(job_id=commit_response["job_id"])
+    status_payload = get_specific_job(job_id=parent_job)
     status = status_payload["data"][0]["result_str"]
     print(f"Parent job status: {status}")
     print("-" * 50)
@@ -79,10 +79,9 @@ if __name__ == "__main__":
     child_jobs = []
     if status == "OK":
         all_jobs = get_commit_jobs()
-        for x in all_jobs["data"]:
-            if x["parent_id"] == parent_job:
-                child_jobs.append(x["id"])
-
+        child_jobs.extend(
+            x["id"] for x in all_jobs["data"] if x["parent_id"] == parent_job
+        )
     # Loop through the child jobs and monitor their status until they are all complete.
     while child_jobs != []:
         for job in sorted(child_jobs):
