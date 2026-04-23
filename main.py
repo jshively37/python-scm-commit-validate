@@ -53,7 +53,18 @@ def get_commit_jobs():
 
 def get_specific_job(job_id):
     url = f"{BASE_API_URL}/config/operations/v1/jobs/{job_id}"
-    return requests.request(method="GET", url=url, headers=HEADERS).json()
+    try:
+        response = requests.request(method="GET", url=url, headers=HEADERS)
+        response.raise_for_status()
+        return response.json()
+    except requests.exceptions.HTTPError as err:
+        if err.response.status_code == 401:
+            print("Error 401: Unauthorized. Refreshing token and retrying...")
+            create_token()
+            return requests.request(method="GET", url=url, headers=HEADERS).json()
+        else:
+            print(f"HTTP error occurred: {err}")
+
 
 
 if __name__ == "__main__":
