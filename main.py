@@ -40,7 +40,15 @@ def create_token():
 
 def make_commit():
     url = f"{BASE_API_URL}/config/operations/v1/config-versions/candidate:push"
-    payload = {"folders": ["All"], "description": "Commit from API"}
+    payload = {
+        "folders": [
+            "Remote Networks",
+            "Service Connections",
+            "Mobile Users",
+            "Mobile Users Explicit Proxy",
+        ],
+        "description": "Commit from API",
+    }
     return requests.request(
         method="POST", url=url, headers=HEADERS, json=payload
     ).json()
@@ -82,7 +90,7 @@ if __name__ == "__main__":
         sleep(SLEEP_TIME)
         status_payload = get_specific_job(job_id=commit_response["job_id"])
         status = status_payload["data"][0]["result_str"]
-        if status == 'FAIL':
+        if status == "FAIL":
             print(f"Parent job {parent_job} failed. Exiting.")
             exit(1)
         print(f"Parent job {parent_job} status: {status}")
@@ -105,7 +113,7 @@ if __name__ == "__main__":
             print("-" * 50)
             if status == "OK":
                 child_jobs.remove(job)
-            elif status == 'FAIL':
+            elif status == "FAIL":
                 print(f"Child job {job} failed. Removing from list and continuing.")
                 child_jobs.remove(job)
             else:
