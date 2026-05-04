@@ -20,6 +20,14 @@ AUTH_HEADERS = {
 # Time to sleep between requests in seconds.
 SLEEP_TIME = 15
 
+# Prisma Acess folders variable list for commit. This can be modified to include any folders that need to be committed.
+FOLDERS = [
+            "Remote Networks",
+            "Service Connections",
+            "Mobile Users",
+            "Mobile Users Explicit Proxy",
+        ]
+
 load_dotenv()
 TSG_ID = os.environ.get("TSG_ID")
 CLIENT_ID = os.environ.get("CLIENT_ID")
@@ -41,12 +49,7 @@ def create_token():
 def make_commit():
     url = f"{BASE_API_URL}/config/operations/v1/config-versions/candidate:push"
     payload = {
-        "folders": [
-            "Remote Networks",
-            "Service Connections",
-            "Mobile Users",
-            "Mobile Users Explicit Proxy",
-        ],
+        "folders": FOLDERS,
         "description": "Commit from API",
     }
     return requests.request(

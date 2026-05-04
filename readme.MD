@@ -14,7 +14,7 @@ Use at your own discretion.
 
 ## Limitations:
 * Not using async and calls will be slow.
-* No error checking.
+* The target folders to commit are defined in the `FOLDERS` list variable in `main.py`. You can modify this to taraget only specific folders. The list of folders in Prisma Acess can be returned using the following API endpoint: `https://pan.dev/scm/api/config/sase/setup/list-folders/`.
 
 ## Creating a service account in Prisma Access
 
